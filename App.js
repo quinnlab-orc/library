@@ -7,6 +7,8 @@ import './App.css';
 // add a delete button to each book
 
 // initial library contents
+
+
 const initialLibrary = [
   {
     title: "The Hobbit",
@@ -23,7 +25,9 @@ const initialLibrary = [
 ]
 
 function App() {
+
   const [myLibrary, setMyLibrary] = React.useState(initialLibrary);
+
 
   // setter function, adds a new book to the library
   // should be passed to a child component
@@ -47,17 +51,25 @@ function App() {
     setMyLibrary(newLibrary)
   }
 
+  function deleteBook(index) {
+    const selectedBook = myLibrary[index];
+    const editedLibrary = [...myLibrary];
+    editedLibrary.splice(selectedBook, 1);
+    setMyLibrary(editedLibrary);
+  }
+
   return (
     <div className="App">
       <AddBooktoLibrary onAddBook={addBook} />
       <div className="books"></div>
-      <div>
+      <div className="book">
         {myLibrary.map(({title, author, pages, read}, index) => (
           <div key={index}>
             <h3>{title}</h3>
-            <p>{author}</p>
-            <p>{pages}</p>
+            <p>Author: {author}</p>
+            <p>Pages: {pages}</p>
             <p>Read? <input type='checkbox' checked={read} onChange={() => toggleBookRead(index)} /></p>
+            <button onClick={() => deleteBook(index)}>X</button>
           </div>
         ))}
       </div>
@@ -80,10 +92,13 @@ function AddBooktoLibrary(props) {
 
   return (
     <div>
-      <input type='text' value={newBook.title} onChange={(event) => setNewBook({...newBook, title: event.target.value})} />
-      <input type='text' value={newBook.author} onChange={(event) => setNewBook({...newBook, author: event.target.value})} />
-      <input type='text' value={newBook.pages} onChange={(event) => setNewBook({...newBook, pages: event.target.value})} />
-      <input type='checkbox' checked={newBook.read} onChange={(event) => setNewBook({...newBook, read: event.target.checked})} />
+      Title<input type='text' value={newBook.title} onChange={(event) => setNewBook({...newBook, title: event.target.value})} />
+      <br></br>
+      Author<input type='text' value={newBook.author} onChange={(event) => setNewBook({...newBook, author: event.target.value})} />
+      <br></br>
+      Pages<input type='text' value={newBook.pages} onChange={(event) => setNewBook({...newBook, pages: event.target.value})} />
+      <br></br>
+      Read?<input type='checkbox' checked={newBook.read} onChange={(event) => setNewBook({...newBook, read: event.target.checked})} />
       <br></br>
       <button onClick={handleClick}>Add Book</button>
     </div>
