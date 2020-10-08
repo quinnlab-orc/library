@@ -1,33 +1,19 @@
 import React from 'react';
 import './App.css';
 
-// use a text file of library as the state
-// write new books to the text file
-// use an effect hook
-// add a delete button to each book
 
-// initial library contents
-
-
-const initialLibrary = [
-  {
-    title: "The Hobbit",
-    author: "Tolkien",
-    pages: "295",
-    read: true
-  },
-  {
-    title: "The Two Towers",
-    author: "Tolkien",
-    pages: "352",
-    read: true
-  }
-]
 
 function App() {
+   // gets 'myLibraryInLocalStorage' from localStorage, or if emtpy, returns empty array
+  const storedLibrary = JSON.parse(localStorage.getItem('myLibraryInLocalStorage') || '[]')
+  
+  // sets state to equal the local storage
+  const [myLibrary, setMyLibrary] = React.useState(storedLibrary); 
 
-  const [myLibrary, setMyLibrary] = React.useState(initialLibrary);
-
+  // sets myLibrary as localStorage when myLibrary is changed at all
+  React.useEffect(() => {
+    localStorage.setItem('myLibraryInLocalStorage', JSON.stringify(myLibrary));
+  }, [myLibrary]);
 
   // setter function, adds a new book to the library
   // should be passed to a child component
@@ -60,22 +46,27 @@ function App() {
 
   return (
     <div className="App">
-      <AddBooktoLibrary onAddBook={addBook} />
+      <h1 className="titleText">My Library</h1>
+      <div className="bookForm">
+        <AddBooktoLibrary onAddBook={addBook}/>
+      </div>
       <div className="books"></div>
+      <h2 className="myBook">My Books</h2>
       <div className="book">
         {myLibrary.map(({title, author, pages, read}, index) => (
           <div key={index}>
             <h3>{title}</h3>
-            <p>Author: {author}</p>
-            <p>Pages: {pages}</p>
-            <p>Read? <input type='checkbox' checked={read} onChange={() => toggleBookRead(index)} /></p>
-            <button onClick={() => deleteBook(index)}>X</button>
+            <p>
+              {author} &nbsp; {pages} pages &nbsp; Have read: 
+              <input type='checkbox' checked={read} onChange={() => toggleBookRead(index)} />
+              &nbsp;&nbsp; <button className="delete" onClick={() => deleteBook(index)}>X</button>
+            </p>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
 // initial new book state
 const initialState = {title: '', author: '', pages: '', read: false}
@@ -92,15 +83,17 @@ function AddBooktoLibrary(props) {
 
   return (
     <div>
-      Title<input type='text' value={newBook.title} onChange={(event) => setNewBook({...newBook, title: event.target.value})} />
+      <h3>Add New Book</h3>
+      <input type='text' placeholder="Title" value={newBook.title} onChange={(event) => setNewBook({...newBook, title: event.target.value})} />
       <br></br>
-      Author<input type='text' value={newBook.author} onChange={(event) => setNewBook({...newBook, author: event.target.value})} />
+      <input type='text' placeholder="Author" value={newBook.author} onChange={(event) => setNewBook({...newBook, author: event.target.value})} />
       <br></br>
-      Pages<input type='text' value={newBook.pages} onChange={(event) => setNewBook({...newBook, pages: event.target.value})} />
+      <input type='text' placeholder="Pages" value={newBook.pages} onChange={(event) => setNewBook({...newBook, pages: event.target.value})} />
       <br></br>
       Read?<input type='checkbox' checked={newBook.read} onChange={(event) => setNewBook({...newBook, read: event.target.checked})} />
       <br></br>
       <button onClick={handleClick}>Add Book</button>
+      
     </div>
   )
 };
