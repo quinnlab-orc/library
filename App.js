@@ -4,6 +4,7 @@ import './App.css';
 
 
 function App() {
+
    // gets 'myLibraryInLocalStorage' from localStorage, or if emtpy, returns empty array
   const storedLibrary = JSON.parse(localStorage.getItem('myLibraryInLocalStorage') || '[]')
   
@@ -37,11 +38,9 @@ function App() {
     setMyLibrary(newLibrary)
   }
 
-  function deleteBook(index) {
-    const selectedBook = myLibrary[index];
-    const editedLibrary = [...myLibrary];
-    editedLibrary.splice(selectedBook, 1);
-    setMyLibrary(editedLibrary);
+  function deleteBook(title) {
+    const filteredArray = [...myLibrary].filter(items => items.title !== title)
+    setMyLibrary(filteredArray)
   }
 
   return (
@@ -54,12 +53,12 @@ function App() {
       <h2 className="myBook">My Books</h2>
       <div className="book">
         {myLibrary.map(({title, author, pages, read}, index) => (
-          <div key={index}>
+          <div key={title}>
             <h3>{title}</h3>
             <p>
               {author} &nbsp; {pages} pages &nbsp; Have read: 
               <input type='checkbox' checked={read} onChange={() => toggleBookRead(index)} />
-              &nbsp;&nbsp; <button className="delete" onClick={() => deleteBook(index)}>X</button>
+              &nbsp;&nbsp; <button className="delete" onClick={() => deleteBook(title)}>X</button>
             </p>
           </div>
         ))}
